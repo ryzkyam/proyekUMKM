@@ -326,7 +326,9 @@
     </div>
 
     <script>
-      const API_URL = "http://localhost:5072/api/product";
+      // UPDATE: Menggunakan link NGROK lo sebagai API URL
+      const API_URL = "https://nonsymphonic-leisha-unamalgamated.ngrok-free.dev/api/product";
+      
       let products = [];
       let cart = [];
       let editId = null;
@@ -340,7 +342,12 @@
 
       async function fetchProducts() {
         try {
-          const response = await fetch(API_URL);
+          // Tambahkan header anti-ngrok-warning agar fetch tidak terhalang layar biru
+          const response = await fetch(API_URL, {
+            headers: {
+              "ngrok-skip-browser-warning": "69420"
+            }
+          });
           products = await response.json();
           renderPOS();
           renderInventory();
@@ -349,18 +356,16 @@
         }
       }
 
-      // --- FITUR BARU: FUNGSI EDIT ---
       function editProduct(id) {
         const p = products.find((item) => item.id === id);
         if (!p) return;
 
-        // Isi form modal dengan data lama
         document.getElementById("in-name").value = p.name;
         document.getElementById("in-category").value = p.category;
         document.getElementById("in-price").value = p.price;
         document.getElementById("in-stock").value = p.stock;
 
-        editId = id; // Simpan ID untuk diproses di saveNewProduct
+        editId = id; 
         document.querySelector("#product-modal h3").innerText = "Edit Barang";
         toggleModal("product-modal");
       }
@@ -493,38 +498,39 @@
 
         const finalTotal = cart.reduce((acc, i) => acc + i.price * i.qty, 0);
 
-        // Data yang mau dikirim ke tabel Transactions
         const transactionData = {
           total: finalTotal,
           itemDetails: cart.map((i) => `${i.name} x${i.qty}`).join(", "),
         };
 
         try {
-          // A. SIMPAN KE TABEL TRANSAKSI (API Baru lo)
           const transResponse = await fetch(`${API_URL}/checkout`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { 
+              "Content-Type": "application/json",
+              "ngrok-skip-browser-warning": "69420"
+            },
             body: JSON.stringify(transactionData),
           });
 
           if (!transResponse.ok) throw new Error("Gagal simpan transaksi");
 
-          // B. UPDATE STOK PRODUK SATU-SATU (Logic yang lama)
           for (const item of cart) {
-            // Kita ambil data produk asli dari array products (stok sudah dikurangi di addToCart)
             const latestProductData = products.find((p) => p.id === item.id);
             await fetch(`${API_URL}/${item.id}`, {
               method: "PUT",
-              headers: { "Content-Type": "application/json" },
+              headers: { 
+                "Content-Type": "application/json",
+                "ngrok-skip-browser-warning": "69420"
+              },
               body: JSON.stringify({ ...latestProductData }),
             });
           }
 
-          // C. SELESAI
           showReceipt(finalTotal);
           cart = [];
           updateCartUI();
-          await loadInitialData(); // Refresh data produk & laporan dari DB
+          await loadInitialData(); 
         } catch (error) {
           console.error(error);
           alert("Checkout Gagal. Cek koneksi API!");
@@ -599,17 +605,23 @@
           if (editId) {
             await fetch(`${API_URL}/${editId}`, {
               method: "PUT",
-              headers: { "Content-Type": "application/json" },
+              headers: { 
+                "Content-Type": "application/json",
+                "ngrok-skip-browser-warning": "69420"
+              },
               body: JSON.stringify({ id: editId, ...payload }),
             });
           } else {
             await fetch(API_URL, {
               method: "POST",
-              headers: { "Content-Type": "application/json" },
+              headers: { 
+                "Content-Type": "application/json",
+                "ngrok-skip-browser-warning": "69420"
+              },
               body: JSON.stringify(payload),
             });
           }
-          closeModal(); // Reset form & ID setelah simpan
+          closeModal();
           await fetchProducts();
         } catch (err) {
           alert("Gagal menyimpan data!");
@@ -617,7 +629,7 @@
       }
 
       function closeModal() {
-        editId = null; // Penting: Reset ID edit
+        editId = null; 
         document.querySelector("#product-modal h3").innerText = "Barang Baru";
         document.getElementById("in-name").value = "";
         document.getElementById("in-category").value = "";
@@ -628,32 +640,32 @@
 
       async function deleteProduct(id) {
         if (confirm("Hapus barang?")) {
-          await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+          await fetch(`${API_URL}/${id}`, { 
+            method: "DELETE",
+            headers: { "ngrok-skip-browser-warning": "69420" }
+          });
           await fetchProducts();
         }
       }
 
-      // ... kode yang lain sudah oke ...
-
       async function renderAnalytics() {
         try {
-          const response = await fetch(`${API_URL}/stats`);
+          const response = await fetch(`${API_URL}/stats`, {
+            headers: { "ngrok-skip-browser-warning": "69420" }
+          });
           const data = await response.json();
 
-          // 1. Update Card Angka
           document.getElementById(
             "stat-omzet"
           ).innerText = `Rp ${data.totalOmzet.toLocaleString()}`;
           document.getElementById("stat-sales").innerText = data.totalSales;
 
-          // Menghitung total item terjual dari dictionary itemSales
           const totalQty = Object.values(data.itemSales).reduce(
             (a, b) => a + b,
             0
           );
           document.getElementById("stat-items").innerText = totalQty;
 
-          // 2. Render Best Seller List
           const list = document.getElementById("best-seller-list");
           const sortedItems = Object.entries(data.itemSales)
             .sort(([, a], [, b]) => b - a)
@@ -683,14 +695,12 @@
               '<p class="text-gray-400 italic text-center py-4">Belum ada data penjualan.</p>';
           }
 
-          // 3. Panggil fungsi stok (Sudah kita buat di bawah)
           renderStockRecommendation();
         } catch (error) {
           console.error("Gagal update analytics:", error);
         }
       }
 
-      // Tambahkan fungsi ini supaya renderAnalytics nggak error
       function renderStockRecommendation() {
         const lowStockItems = products.filter((p) => p.stock < 10);
         const recommendationBox = document.querySelector(
@@ -717,15 +727,11 @@
         document.getElementById(id).classList.toggle("hidden");
       }
 
-      fetchProducts();
-
-      // Tambahkan ini di script HTML lo
       async function loadInitialData() {
-        await fetchProducts(); // Tarik menu & stok
-        await renderAnalytics(); // Tarik laporan omzet dari DB
+        await fetchProducts(); 
+        await renderAnalytics(); 
       }
 
-      // Ganti pemanggilan paling bawah jadi ini
       loadInitialData();
     </script>
   </body>
