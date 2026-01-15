@@ -1,738 +1,351 @@
 <!DOCTYPE html>
 <html lang="id">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>WarungPos | Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-      rel="stylesheet"
-    />
-    <style>
-      @media (max-width: 768px) {
-        .tab-content {
-          padding-bottom: 80px;
-        }
-      }
-      .animate-fade-in {
-        animation: fadeIn 0.3s ease-in;
-      }
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(10px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-    </style>
-  </head>
-  <body class="bg-gray-100 font-sans text-gray-900">
-    <aside
-      class="fixed z-50 bg-gray-900 text-white md:inset-y-0 md:left-0 md:w-64 md:p-6 inset-x-0 bottom-0 h-16 md:h-auto flex md:flex-col items-center md:items-start justify-around md:justify-start"
-    >
-      <div class="hidden md:flex items-center gap-3 mb-10">
-        <div class="p-2 bg-blue-600 rounded-lg">
-          <i class="fas fa-rocket text-xl text-white"></i>
-        </div>
-        <span class="text-xl font-bold tracking-wider"
-          >WARUNG<span class="text-blue-500">POS</span></span
-        >
-      </div>
-      <nav
-        class="flex md:flex-col w-full md:space-y-4 justify-around md:justify-start"
-      >
-        <button
-          onclick="switchTab('pos')"
-          class="nav-btn flex flex-col md:flex-row items-center gap-1 md:gap-4 p-2 md:p-3 rounded-xl bg-blue-600 text-white w-full transition"
-        >
-          <i class="fas fa-cash-register text-lg md:w-6"></i>
-          <span class="text-[10px] md:text-base font-medium">POS</span>
-        </button>
-        <button
-          onclick="switchTab('inventory')"
-          class="nav-btn flex flex-col md:flex-row items-center gap-1 md:gap-4 p-2 md:p-3 rounded-xl text-gray-400 hover:text-white w-full transition"
-        >
-          <i class="fas fa-boxes text-lg md:w-6"></i>
-          <span class="text-[10px] md:text-base font-medium">Stok</span>
-        </button>
-        <button
-          onclick="switchTab('analytics')"
-          class="nav-btn flex flex-col md:flex-row items-center gap-1 md:gap-4 p-2 md:p-3 rounded-xl text-gray-400 hover:text-white w-full transition"
-        >
-          <i class="fas fa-chart-line text-lg md:w-6"></i>
-          <span class="text-[10px] md:text-base font-medium">Laporan</span>
-        </button>
-      </nav>
-    </aside>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nama Lu | Business Analyst & FSD</title>
 
-    <main class="md:ml-64 p-4 md:p-8 min-h-screen">
-      <section id="pos-section" class="tab-content">
-        <div class="flex flex-col lg:flex-row gap-6">
-          <div class="flex-grow">
-            <div
-              class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6"
-            >
-              <h2 class="text-2xl font-bold">Kasir</h2>
-              <div class="relative w-full md:w-1/2">
-                <i
-                  class="fas fa-search absolute left-4 top-3 text-gray-400"
-                ></i>
-                <input
-                  type="text"
-                  onkeyup="searchProduct(this.value)"
-                  placeholder="Cari menu atau kategori..."
-                  class="w-full pl-10 pr-4 py-2 rounded-xl border-none shadow-sm focus:ring-2 focus:ring-blue-500 outline-none"
-                />
-              </div>
-            </div>
-            <div
-              id="pos-grid"
-              class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4"
-            ></div>
-          </div>
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
 
-          <div
-            class="w-full lg:w-96 bg-white rounded-3xl shadow-lg p-6 flex flex-col sticky top-8 h-fit lg:min-h-[500px]"
-          >
-            <h3
-              class="font-bold text-xl mb-4 flex items-center justify-between"
-            >
-              Pesanan
-              <span
-                id="cart-count"
-                class="bg-blue-100 text-blue-600 text-xs px-2 py-1 rounded-full"
-                >0</span
-              >
-            </h3>
-            <div
-              id="cart-list"
-              class="flex-grow overflow-y-auto space-y-3 max-h-60 lg:max-h-96"
-            >
-              <p class="text-gray-400 text-center py-10 italic text-sm">
-                Keranjang kosong
-              </p>
-            </div>
-            <div class="pt-4 border-t space-y-2 mt-4 bg-white">
-              <div class="flex justify-between text-gray-500 text-sm">
-                <span>Subtotal</span><span id="sub-val">Rp 0</span>
-              </div>
-              <div class="flex justify-between text-xl font-bold text-blue-600">
-                <span>Total</span><span id="total-val">Rp 0</span>
-              </div>
-              <button
-                onclick="processCheckout()"
-                class="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold mt-2 hover:bg-blue-700 active:scale-95 transition shadow-lg shadow-blue-100"
-              >
-                PROSES BAYAR
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-      <section id="inventory-section" class="tab-content hidden">
-        <div class="bg-white rounded-3xl p-6 shadow-sm overflow-hidden">
-          <div
-            class="flex flex-col md:flex-row justify-between items-center gap-4 mb-8"
-          >
-            <h2 class="text-2xl font-bold">Manajemen Stok</h2>
-            <button
-              onclick="toggleModal('product-modal')"
-              class="bg-blue-600 text-white px-6 py-3 rounded-xl font-bold"
-            >
-              + Tambah Barang
-            </button>
-          </div>
-          <div class="overflow-x-auto">
-            <table class="w-full text-left">
-              <thead
-                class="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider"
-              >
-                <tr>
-                  <th class="p-4">Nama</th>
-                  <th class="p-4">Kategori</th>
-                  <th class="p-4 text-center">Harga</th>
-                  <th class="p-4 text-center">Stok</th>
-                  <th class="p-4 text-right">Aksi</th>
-                </tr>
-              </thead>
-              <tbody id="inventory-table" class="divide-y"></tbody>
-            </table>
-          </div>
-        </div>
-      </section>
+  <style>
+    html { scroll-behavior: smooth; }
+  </style>
+</head>
 
-      <section id="analytics-section" class="tab-content hidden">
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
-          <div
-            class="bg-gradient-to-br from-blue-600 to-blue-700 p-6 rounded-3xl text-white shadow-lg"
-          >
-            <p class="opacity-80 text-xs font-bold uppercase tracking-wider">
-              Total Omzet
-            </p>
-            <h4 id="stat-omzet" class="text-3xl font-black mt-1">Rp 0</h4>
-            <p class="text-[10px] mt-4 bg-white/20 w-fit px-2 py-1 rounded">
-              +12% dari kemarin
-            </p>
-          </div>
-          <div
-            class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100"
-          >
-            <p class="text-gray-400 text-xs font-bold uppercase">
-              Total Transaksi
-            </p>
-            <h4 id="stat-sales" class="text-3xl font-black text-gray-800">0</h4>
-            <p class="text-[10px] text-green-500 font-bold mt-4">
-              <i class="fas fa-arrow-up"></i> Terus meningkat
-            </p>
-          </div>
-          <div
-            class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100"
-          >
-            <p class="text-gray-400 text-xs font-bold uppercase">
-              Item Terjual
-            </p>
-            <h4 id="stat-items" class="text-3xl font-black text-gray-800">0</h4>
-            <p class="text-[10px] text-gray-400 mt-4">
-              Rata-rata 2 item/transaksi
-            </p>
-          </div>
-        </div>
+<body class="bg-slate-50 text-slate-800">
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div
-            class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100"
-          >
-            <div class="flex justify-between items-center mb-6">
-              <h3 class="font-bold text-gray-800 flex items-center gap-2">
-                <i class="fas fa-fire text-orange-500"></i> Menu Paling Laku
-              </h3>
-              <span
-                class="text-[10px] bg-gray-100 px-2 py-1 rounded-lg text-gray-500"
-                >Live Update</span
-              >
-            </div>
-            <div id="best-seller-list" class="space-y-4"></div>
-          </div>
+<!-- ================= HERO ================= -->
+<header class="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800 text-white relative">
+  <div class="text-center max-w-3xl px-6">
+    <h1 class="text-5xl md:text-6xl font-extrabold mb-6 tracking-tight">
+      Halo, Gue <br>
+      <span class="text-blue-400">REZA RIZKI RAMADHAN</span>
+    </h1>
+    <p class="text-xl text-slate-300 mb-10">
+      Business Analyst • Full Stack Developer • QA-Oriented Thinker
+    </p>
+    <div class="flex gap-4 justify-center">
+      <a href="#portfolio" class="bg-blue-600 hover:bg-blue-700 px-8 py-3 rounded-full font-semibold transition">
+        Lihat Portofolio
+      </a>
+      <a href="#about" class="border border-slate-400 px-8 py-3 rounded-full font-semibold hover:bg-white hover:text-slate-900 transition">
+        Tentang Gue
+      </a>
+    </div>
+  </div>
+</header>
 
-          <div
-            class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100"
-          >
-            <h3 class="font-bold text-gray-800 mb-6 flex items-center gap-2">
-              <i class="fas fa-lightbulb text-yellow-500"></i> Rekomendasi
-              Bisnis
-            </h3>
-            <div class="space-y-4">
-              <div class="p-4 bg-blue-50 rounded-2xl border border-blue-100">
-                <p class="text-sm text-blue-800 font-medium">Stok Menipis!</p>
-                <p class="text-xs text-blue-600 mt-1">
-                  Ada 5 item yang stoknya di bawah 10 pcs. Segera restock Bro!
-                </p>
-              </div>
-              <button
-                onclick="window.print()"
-                class="w-full py-4 bg-gray-900 text-white rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-black transition"
-              >
-                <i class="fas fa-file-pdf"></i> DOWNLOAD LAPORAN (PDF)
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
+<!-- ================= ABOUT ================= -->
+<section id="about" class="py-24 px-6 max-w-6xl mx-auto">
+  <div class="grid md:grid-cols-2 gap-14">
+    
+    <!-- Background -->
+    <div>
+      <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+        <i class="fas fa-user-graduate text-blue-600"></i>
+        Background
+      </h2>
+      <p class="text-slate-600 leading-relaxed mb-6">
+        Gue berlatar belakang <strong>Sistem Informasi</strong> dengan fokus ke
+        <strong>analisis proses bisnis</strong>, dokumentasi sistem, dan
+        implementasi teknis berbasis web.
+      </p>
+      <p class="text-slate-600 leading-relaxed">
+        Pengalaman real case seperti <strong>Steam Berkah Wash</strong> bikin gue terbiasa
+        ngerjain project dari nol: requirement, design, testing, sampai evaluasi bisnis.
+      </p>
+    </div>
 
-    <div
-      id="product-modal"
-      class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden z-[100] flex items-center justify-center p-4"
-    >
-      <div class="bg-white p-8 rounded-3xl w-full max-w-md shadow-2xl">
-        <h3 class="text-xl font-bold mb-6">Barang Baru</h3>
-        <div class="space-y-4">
-          <input
-            type="text"
-            id="in-name"
-            placeholder="Nama Barang"
-            class="w-full p-4 bg-gray-50 rounded-xl border focus:ring-2 focus:ring-blue-500 outline-none"
-          />
-          <input
-            type="text"
-            id="in-category"
-            placeholder="Kategori"
-            class="w-full p-4 bg-gray-50 rounded-xl border focus:ring-2 focus:ring-blue-500 outline-none"
-          />
-          <div class="grid grid-cols-2 gap-4">
-            <input
-              type="number"
-              id="in-price"
-              placeholder="Harga"
-              class="p-4 bg-gray-50 rounded-xl border focus:ring-2 focus:ring-blue-500 outline-none"
-            />
-            <input
-              type="number"
-              id="in-stock"
-              placeholder="Stok"
-              class="p-4 bg-gray-50 rounded-xl border focus:ring-2 focus:ring-blue-500 outline-none"
-            />
-          </div>
-          <div class="flex gap-3 pt-4">
-            <button
-              onclick="toggleModal('product-modal')"
-              class="flex-1 py-4 font-bold text-gray-500"
-            >
-              Batal
-            </button>
-            <button
-              onclick="saveNewProduct()"
-              class="flex-1 bg-blue-600 text-white py-4 rounded-2xl font-bold shadow-lg shadow-blue-100"
-            >
-              Simpan
-            </button>
-          </div>
-        </div>
+    <!-- Skill Matrix -->
+    <div>
+      <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+        <i class="fas fa-layer-group text-blue-600"></i>
+        Skill Matrix
+      </h2>
+      <div class="flex flex-wrap gap-3">
+        <span class="px-4 py-2 rounded-lg bg-blue-100 text-blue-700 font-semibold text-sm">Business Analysis</span>
+        <span class="px-4 py-2 rounded-lg bg-blue-100 text-blue-700 font-semibold text-sm">SRS / BRD</span>
+        <span class="px-4 py-2 rounded-lg bg-blue-100 text-blue-700 font-semibold text-sm">UML / ERD</span>
+        <span class="px-4 py-2 rounded-lg bg-green-100 text-green-700 font-semibold text-sm">QA Testing</span>
+        <span class="px-4 py-2 rounded-lg bg-green-100 text-green-700 font-semibold text-sm">Bug Report</span>
+        <span class="px-4 py-2 rounded-lg bg-slate-200 text-slate-700 font-semibold text-sm">ASP.NET</span>
+        <span class="px-4 py-2 rounded-lg bg-slate-200 text-slate-700 font-semibold text-sm">SQL</span>
+        <span class="px-4 py-2 rounded-lg bg-slate-200 text-slate-700 font-semibold text-sm">Javascript</span>
+        <span class="px-4 py-2 rounded-lg bg-slate-200 text-slate-700 font-semibold text-sm">SQL server</span>
       </div>
     </div>
 
-    <div
-      id="receipt-modal"
-      class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden z-[110] flex items-center justify-center p-4"
-    >
-      <div
-        class="bg-white p-6 rounded-3xl w-full max-w-xs shadow-2xl text-center"
-      >
-        <div class="mb-4">
-          <i class="fas fa-check-circle text-green-500 text-5xl"></i>
-          <h3 class="text-xl font-bold mt-2">Pembayaran Berhasil</h3>
-          <p id="receipt-date" class="text-[10px] text-gray-400 mt-1"></p>
-        </div>
-        <div
-          id="receipt-items"
-          class="text-left text-sm space-y-2 mb-4 border-y py-4"
-        ></div>
-        <div class="flex justify-between font-bold text-lg mb-6">
-          <span>Total</span
-          ><span id="receipt-total" class="text-blue-600"></span>
-        </div>
-        <button
-          onclick="toggleModal('receipt-modal')"
-          class="w-full bg-gray-900 text-white py-3 rounded-xl font-bold"
-        >
-          SELESAI
-        </button>
+  </div>
+</section>
+
+<!-- ================= EXPERIENCE INTRO ================= -->
+<section class="py-20 px-6 bg-slate-50 border-y">
+  <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+
+    <!-- Left -->
+    <div>
+      <h2 class="text-3xl font-extrabold mb-6 leading-tight">
+        Dari Analisis <span class="text-blue-600">Masalah</span><br>
+        ke Solusi <span class="text-blue-600">Nyata</span>
+      </h2>
+
+      <p class="text-slate-600 mb-6 leading-relaxed">
+        Pengalaman gue berfokus pada bagaimana kebutuhan bisnis diterjemahkan menjadi
+        <strong>requirement sistem</strong>, <strong>desain teknis</strong>, dan
+        <strong>evaluasi kualitas</strong>.
+      </p>
+
+      <p class="text-slate-600 mb-8 leading-relaxed">
+        Setiap project dikerjakan dengan pendekatan <strong>end-to-end</strong>,
+        bukan sekadar ngoding, tapi memastikan solusi tersebut
+        <strong>layak secara bisnis</strong>.
+      </p>
+
+      <!-- CTA -->
+      <a href="#experience"
+         class="inline-flex items-center gap-3 bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-full font-semibold transition">
+        Lihat Detail Pengalaman
+        <i class="fas fa-arrow-down"></i>
+      </a>
+    </div>
+
+    <!-- Right -->
+    <div class="grid grid-cols-2 gap-6">
+      <div class="bg-white p-6 rounded-xl shadow">
+        <h3 class="text-3xl font-bold text-blue-600 mb-2">3+</h3>
+        <p class="text-sm text-slate-500">Tahun Belajar & Project</p>
+      </div>
+      <div class="bg-white p-6 rounded-xl shadow">
+        <h3 class="text-3xl font-bold text-blue-600 mb-2">End-to-End</h3>
+        <p class="text-sm text-slate-500">Analysis → Design → QA</p>
+      </div>
+      <div class="bg-white p-6 rounded-xl shadow">
+        <h3 class="text-3xl font-bold text-blue-600 mb-2">BA + QA</h3>
+        <p class="text-sm text-slate-500">Business & Quality Focus</p>
+      </div>
+      <div class="bg-white p-6 rounded-xl shadow">
+        <h3 class="text-3xl font-bold text-blue-600 mb-2">Tech-Aware</h3>
+        <p class="text-sm text-slate-500">Understand Dev Perspective</p>
       </div>
     </div>
 
-    <script>
-      // UPDATE: Menggunakan link NGROK lo sebagai API URL
-      const API_URL = "https://nonsymphonic-leisha-unamalgamated.ngrok-free.dev/api/product";
-      
-      let products = [];
-      let cart = [];
-      let editId = null;
+  </div>
+</section>
 
-      let stats = {
-        totalOmzet: 0,
-        totalSales: 0,
-        totalItems: 0,
-        itemSales: {},
-      };
 
-      async function fetchProducts() {
-        try {
-          // Tambahkan header anti-ngrok-warning agar fetch tidak terhalang layar biru
-          const response = await fetch(API_URL, {
-            headers: {
-              "ngrok-skip-browser-warning": "69420"
-            }
-          });
-          products = await response.json();
-          renderPOS();
-          renderInventory();
-        } catch (error) {
-          console.error("API error:", error);
-        }
-      }
+<!-- ================= EXPERIENCE ================= -->
+<section id="experience" class="py-24 px-6 bg-white">
+  <div class="max-w-6xl mx-auto">
 
-      function editProduct(id) {
-        const p = products.find((item) => item.id === id);
-        if (!p) return;
+    <!-- Title -->
+    <div class="mb-16">
+      <h2 class="text-4xl font-bold mb-4 flex items-center gap-3">
+        <i class="fas fa-briefcase text-blue-600"></i>
+        Pengalaman
+      </h2>
+      <p class="text-slate-500">
+        Pengalaman berbasis real case project, analisis bisnis, dan implementasi sistem.
+      </p>
+    </div>
 
-        document.getElementById("in-name").value = p.name;
-        document.getElementById("in-category").value = p.category;
-        document.getElementById("in-price").value = p.price;
-        document.getElementById("in-stock").value = p.stock;
+    <!-- Timeline -->
+    <div class="relative border-l-2 border-slate-200 pl-10 space-y-16">
 
-        editId = id; 
-        document.querySelector("#product-modal h3").innerText = "Edit Barang";
-        toggleModal("product-modal");
-      }
+      <!-- Experience 1 -->
+      <div class="relative">
 
-      function switchTab(tabId) {
-        document
-          .querySelectorAll(".tab-content")
-          .forEach((el) => el.classList.add("hidden"));
-        document.getElementById(tabId + "-section").classList.remove("hidden");
-        document.querySelectorAll(".nav-btn").forEach((btn) => {
-          btn.classList.remove("bg-blue-600", "text-white");
-          btn.classList.add("text-gray-400");
-        });
-        const activeBtn = document.querySelector(
-          `button[onclick="switchTab('${tabId}')"]`
-        );
-        activeBtn.classList.add("bg-blue-600", "text-white");
-        activeBtn.classList.remove("text-gray-400");
+        <h3 class="text-xl font-bold text-slate-800">
+          Business Analyst & System Analyst
+        </h3>
+        <p class="text-sm text-slate-500 mb-3">
+          Steam Berkah Wash • 2024 – Sekarang
+        </p>
 
-        if (tabId === "analytics") renderAnalytics();
-        if (tabId === "inventory") renderInventory();
-      }
+        <ul class="list-disc ml-5 space-y-2 text-slate-600 leading-relaxed">
+          <li>Menganalisis proses bisnis pencucian kendaraan dari manual ke digital.</li>
+          <li>Menyusun <strong>SRS, user stories, dan flow bisnis</strong> berbasis kebutuhan owner.</li>
+          <li>Mendesain <strong>UML Diagram (Use Case, Activity, ERD)</strong>.</li>
+          <li>Melakukan <strong>QA testing & bug reporting</strong> dengan pendekatan black-box.</li>
+          <li>Menghubungkan hasil analisis ke <strong>pengambilan keputusan bisnis</strong>.</li>
+        </ul>
 
-      function renderPOS(filtered = products) {
-        const grid = document.getElementById("pos-grid");
-        grid.innerHTML = filtered
-          .map(
-            (p) => `
-            <div onclick="addToCart(${
-              p.id
-            })" class="bg-white p-4 rounded-3xl shadow-sm hover:shadow-xl active:scale-95 transition-all cursor-pointer border border-gray-50 group">
-                <div class="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 mb-4 group-hover:bg-blue-600 group-hover:text-white transition">
-                    <i class="fas ${
-                      p.category === "Coffee" ? "fa-coffee" : "fa-mug-hot"
-                    }"></i>
-                </div>
-                <h4 class="font-bold text-gray-800 text-sm leading-tight mb-1">${
-                  p.name
-                }</h4>
-                <p class="text-blue-600 font-extrabold text-sm mb-2">Rp ${p.price.toLocaleString()}</p>
-                <div class="flex justify-between items-center">
-                    <span class="text-[10px] text-gray-400 font-bold uppercase">Stok: ${
-                      p.stock
-                    }</span>
-                    <i class="fas fa-plus-circle text-gray-200 group-hover:text-blue-500"></i>
-                </div>
-            </div>
-        `
-          )
-          .join("");
-      }
+        <!-- Highlight -->
+        <div class="mt-4 inline-block bg-blue-50 text-blue-700 px-4 py-2 rounded-lg text-sm font-semibold">
+          📊 Impact: Transparansi operasional & evaluasi performa bisnis
+        </div>
+      </div>
 
-      function searchProduct(query) {
-        const filtered = products.filter(
-          (p) =>
-            p.name.toLowerCase().includes(query.toLowerCase()) ||
-            p.category.toLowerCase().includes(query.toLowerCase())
-        );
-        renderPOS(filtered);
-      }
+      <!-- Experience 2 -->
+      <div class="relative">
 
-      function addToCart(id) {
-        const p = products.find((i) => i.id === id);
-        if (p.stock <= 0) return alert("❌ Stok habis!");
-        const item = cart.find((i) => i.id === id);
-        if (item) item.qty++;
-        else cart.push({ ...p, qty: 1 });
-        p.stock--;
-        updateCartUI();
-        renderPOS();
-      }
+        <h3 class="text-xl font-bold text-slate-800">
+          Full Stack Developer (Academic & Personal Project)
+        </h3>
+        <p class="text-sm text-slate-500 mb-3">
+          Project Kampus & Personal • 2022 – 2024
+        </p>
 
-      function removeFromCart(id) {
-        const itemIndex = cart.findIndex((i) => i.id === id);
-        if (itemIndex > -1) {
-          const item = cart[itemIndex];
-          const p = products.find((i) => i.id === id);
-          if (p) p.stock += item.qty;
-          cart.splice(itemIndex, 1);
-          updateCartUI();
-          renderPOS();
-        }
-      }
+        <ul class="list-disc ml-5 space-y-2 text-slate-600 leading-relaxed">
+          <li>Mengembangkan aplikasi web berbasis <strong>ASP.NET Core & SQL Server</strong>.</li>
+          <li>Mengimplementasikan CRUD, authentication, dan role-based access.</li>
+          <li>Menyusun struktur database dari hasil analisis kebutuhan.</li>
+          <li>Berpengalaman bekerja dengan <strong>frontend + backend integration</strong>.</li>
+        </ul>
 
-      function updateCartUI() {
-        const list = document.getElementById("cart-list");
-        if (cart.length === 0) {
-          list.innerHTML = `<p class="text-gray-400 text-center py-10 italic text-sm">Keranjang kosong</p>`;
-        } else {
-          list.innerHTML = cart
-            .map(
-              (item) => `
-                <div class="flex justify-between items-center bg-gray-50 p-4 rounded-2xl animate-fade-in group">
-                    <div class="flex-grow">
-                        <p class="font-bold text-xs">${item.name}</p>
-                        <p class="text-[10px] text-gray-400">${
-                          item.qty
-                        } x Rp ${item.price.toLocaleString()}</p>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <p class="font-bold text-blue-600 text-xs">Rp ${(
-                          item.qty * item.price
-                        ).toLocaleString()}</p>
-                        <button onclick="removeFromCart(${
-                          item.id
-                        })" class="text-red-400 hover:text-red-600 transition p-2">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
-                    </div>
-                </div>
-            `
-            )
-            .join("");
-        }
-        const total = cart.reduce((acc, i) => acc + i.price * i.qty, 0);
-        document.getElementById("cart-count").innerText = cart.reduce(
-          (acc, i) => acc + i.qty,
-          0
-        );
-        document.getElementById(
-          "sub-val"
-        ).innerText = `Rp ${total.toLocaleString()}`;
-        document.getElementById(
-          "total-val"
-        ).innerText = `Rp ${total.toLocaleString()}`;
-      }
+        <div class="mt-4 inline-block bg-green-50 text-green-700 px-4 py-2 rounded-lg text-sm font-semibold">
+          🧩 Impact: Sistem siap dikembangkan & scalable
+        </div>
+      </div>
 
-      async function processCheckout() {
-        if (cart.length === 0) return alert("Pilih menu dulu!");
+      <!-- Experience 3 (Optional / QA Angle) -->
+      <div class="relative">
 
-        const finalTotal = cart.reduce((acc, i) => acc + i.price * i.qty, 0);
+        <h3 class="text-xl font-bold text-slate-800">
+          QA & Automation Learning
+        </h3>
+        <p class="text-sm text-slate-500 mb-3">
+          Self Learning • Ongoing
+        </p>
 
-        const transactionData = {
-          total: finalTotal,
-          itemDetails: cart.map((i) => `${i.name} x${i.qty}`).join(", "),
-        };
+        <ul class="list-disc ml-5 space-y-2 text-slate-600 leading-relaxed">
+          <li>Mempelajari konsep <strong>software testing lifecycle</strong>.</li>
+          <li>Black-box testing, test case, dan bug lifecycle.</li>
+          <li>Memahami hubungan QA dengan Business Analyst & developer.</li>
+        </ul>
 
-        try {
-          const transResponse = await fetch(`${API_URL}/checkout`, {
-            method: "POST",
-            headers: { 
-              "Content-Type": "application/json",
-              "ngrok-skip-browser-warning": "69420"
-            },
-            body: JSON.stringify(transactionData),
-          });
+        <div class="mt-4 inline-block bg-slate-100 text-slate-700 px-4 py-2 rounded-lg text-sm font-semibold">
+          🔍 Fokus: Quality, logic, dan reliability
+        </div>
+      </div>
 
-          if (!transResponse.ok) throw new Error("Gagal simpan transaksi");
+    </div>
+  </div>
+</section>
 
-          for (const item of cart) {
-            const latestProductData = products.find((p) => p.id === item.id);
-            await fetch(`${API_URL}/${item.id}`, {
-              method: "PUT",
-              headers: { 
-                "Content-Type": "application/json",
-                "ngrok-skip-browser-warning": "69420"
-              },
-              body: JSON.stringify({ ...latestProductData }),
-            });
-          }
 
-          showReceipt(finalTotal);
-          cart = [];
-          updateCartUI();
-          await loadInitialData(); 
-        } catch (error) {
-          console.error(error);
-          alert("Checkout Gagal. Cek koneksi API!");
-        }
-      }
+<!-- ================= PORTFOLIO ================= -->
+<section id="portfolio" class="py-24 bg-slate-900 text-white px-6">
+  <div class="max-w-7xl mx-auto">
+    
+    <div class="mb-16">
+      <h2 class="text-4xl font-bold mb-4">Project Case Study</h2>
+      <p class="text-slate-400">
+        Steam Berkah Wash — End-to-End Business & System Analysis
+      </p>
+    </div>
 
-      function showReceipt(total) {
-        document.getElementById("receipt-date").innerText =
-          new Date().toLocaleString("id-ID");
-        document.getElementById("receipt-items").innerHTML = cart
-          .map(
-            (i) => `
-            <div class="flex justify-between"><span>${i.name} x${
-              i.qty
-            }</span><span>Rp ${(i.qty * i.price).toLocaleString()}</span></div>
-        `
-          )
-          .join("");
-        document.getElementById(
-          "receipt-total"
-        ).innerText = `Rp ${total.toLocaleString()}`;
-        toggleModal("receipt-modal");
-      }
+    <div class="grid lg:grid-cols-4 gap-10">
 
-      function renderInventory() {
-        const table = document.getElementById("inventory-table");
-        table.innerHTML = products
-          .map(
-            (p) => `
-            <tr class="hover:bg-gray-50 transition">
-                <td class="p-4 font-bold text-sm">${p.name}</td>
-                <td class="p-4"><span class="bg-gray-100 px-3 py-1 rounded-full text-[10px] font-bold text-gray-500">${
-                  p.category
-                }</span></td>
-                <td class="p-4 text-center font-bold text-sm">Rp ${p.price.toLocaleString()}</td>
-                <td class="p-4 text-center">
-                    <span class="px-3 py-1 ${
-                      p.stock < 10
-                        ? "bg-red-100 text-red-600"
-                        : "bg-green-100 text-green-600"
-                    } rounded-lg text-xs font-black">${p.stock}</span>
-                </td>
-                <td class="p-4 text-right flex justify-end gap-2">
-                    <button onclick="editProduct(${
-                      p.id
-                    })" class="text-blue-400 hover:text-blue-600 p-2"><i class="fas fa-edit"></i></button>
-                    <button onclick="deleteProduct(${
-                      p.id
-                    })" class="text-red-400 hover:text-red-600 p-2"><i class="fas fa-trash"></i></button>
-                </td>
-            </tr>
-        `
-          )
-          .join("");
-      }
+      <!-- Sidebar -->
+      <div class="space-y-4">
+        <button onclick="openDoc('srs')" class="doc-btn border-l-4 border-blue-500 bg-slate-800 p-4 rounded-xl w-full text-left">
+          <p class="text-xs uppercase text-blue-400 font-bold">Requirement</p>
+          <h4 class="font-bold">SRS & User Stories</h4>
+        </button>
 
-      async function saveNewProduct() {
-        const n = document.getElementById("in-name").value;
-        const c = document.getElementById("in-category").value;
-        const p = parseInt(document.getElementById("in-price").value);
-        const s = parseInt(document.getElementById("in-stock").value);
+        <button onclick="openDoc('uml')" class="doc-btn bg-slate-800 p-4 rounded-xl w-full text-left">
+          <p class="text-xs uppercase text-slate-400 font-bold">Design</p>
+          <h4 class="font-bold">UML & ERD</h4>
+        </button>
 
-        if (!n || isNaN(p)) return alert("Isi data dengan benar!");
-        const payload = {
-          name: n,
-          price: p,
-          stock: s || 0,
-          category: c || "Umum",
-        };
+        <button onclick="openDoc('testing')" class="doc-btn bg-slate-800 p-4 rounded-xl w-full text-left">
+          <p class="text-xs uppercase text-slate-400 font-bold">QA</p>
+          <h4 class="font-bold">Testing Report</h4>
+        </button>
+      </div>
 
-        try {
-          if (editId) {
-            await fetch(`${API_URL}/${editId}`, {
-              method: "PUT",
-              headers: { 
-                "Content-Type": "application/json",
-                "ngrok-skip-browser-warning": "69420"
-              },
-              body: JSON.stringify({ id: editId, ...payload }),
-            });
-          } else {
-            await fetch(API_URL, {
-              method: "POST",
-              headers: { 
-                "Content-Type": "application/json",
-                "ngrok-skip-browser-warning": "69420"
-              },
-              body: JSON.stringify(payload),
-            });
-          }
-          closeModal();
-          await fetchProducts();
-        } catch (err) {
-          alert("Gagal menyimpan data!");
-        }
-      }
+      <!-- Viewer -->
+      <div class="lg:col-span-3 bg-white rounded-2xl overflow-hidden shadow-xl">
+        <div class="bg-slate-100 px-6 py-4 border-b">
+          <h3 id="docTitle" class="font-bold text-slate-800">Pilih Dokumen</h3>
+        </div>
+        <iframe
+          id="docViewer"
+          src=""
+          class="w-full h-[600px]"
+        ></iframe>
+      </div>
 
-      function closeModal() {
-        editId = null; 
-        document.querySelector("#product-modal h3").innerText = "Barang Baru";
-        document.getElementById("in-name").value = "";
-        document.getElementById("in-category").value = "";
-        document.getElementById("in-price").value = "";
-        document.getElementById("in-stock").value = "";
-        toggleModal("product-modal");
-      }
+    </div>
+  </div>
+</section>
 
-      async function deleteProduct(id) {
-        if (confirm("Hapus barang?")) {
-          await fetch(`${API_URL}/${id}`, { 
-            method: "DELETE",
-            headers: { "ngrok-skip-browser-warning": "69420" }
-          });
-          await fetchProducts();
-        }
-      }
+<section id="portfolio" class="py-24 bg-slate-900 text-white px-6">
+  <div class="max-w-7xl mx-auto">
+    
+    <div class="mb-16">
+      <h2 class="text-4xl font-bold mb-4">Project Case Study</h2>
+      <p class="text-slate-400">
+        Steam Berkah Wash — End-to-End Business & System Analysis
+      </p>
+    </div>
 
-      async function renderAnalytics() {
-        try {
-          const response = await fetch(`${API_URL}/stats`, {
-            headers: { "ngrok-skip-browser-warning": "69420" }
-          });
-          const data = await response.json();
+    <div class="grid lg:grid-cols-4 gap-10">
 
-          document.getElementById(
-            "stat-omzet"
-          ).innerText = `Rp ${data.totalOmzet.toLocaleString()}`;
-          document.getElementById("stat-sales").innerText = data.totalSales;
+      <!-- Sidebar -->
+      <div class="space-y-4">
+        <button onclick="openDoc('srs')" class="doc-btn border-l-4 border-blue-500 bg-slate-800 p-4 rounded-xl w-full text-left">
+          <p class="text-xs uppercase text-blue-400 font-bold">Requirement</p>
+          <h4 class="font-bold">SRS & User Stories</h4>
+        </button>
 
-          const totalQty = Object.values(data.itemSales).reduce(
-            (a, b) => a + b,
-            0
-          );
-          document.getElementById("stat-items").innerText = totalQty;
+        <button onclick="openDoc('uml')" class="doc-btn bg-slate-800 p-4 rounded-xl w-full text-left">
+          <p class="text-xs uppercase text-slate-400 font-bold">Design</p>
+          <h4 class="font-bold">UML & ERD</h4>
+        </button>
 
-          const list = document.getElementById("best-seller-list");
-          const sortedItems = Object.entries(data.itemSales)
-            .sort(([, a], [, b]) => b - a)
-            .slice(0, 5);
+        <button onclick="openDoc('testing')" class="doc-btn bg-slate-800 p-4 rounded-xl w-full text-left">
+          <p class="text-xs uppercase text-slate-400 font-bold">QA</p>
+          <h4 class="font-bold">Testing Report</h4>
+        </button>
+      </div>
 
-          if (sortedItems.length > 0) {
-            const maxQty = sortedItems[0][1];
-            list.innerHTML = sortedItems
-              .map(([name, qty], index) => {
-                const percentage = (qty / maxQty) * 100;
-                return `
-                    <div class="space-y-1 animate-fade-in">
-                        <div class="flex justify-between text-sm">
-                            <span class="font-bold text-gray-700">${
-                              index + 1
-                            }. ${name}</span>
-                            <span class="text-blue-600 font-black">${qty} terjual</span>
-                        </div>
-                        <div class="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
-                            <div class="bg-blue-500 h-full rounded-full transition-all duration-1000" style="width: ${percentage}%"></div>
-                        </div>
-                    </div>`;
-              })
-              .join("");
-          } else {
-            list.innerHTML =
-              '<p class="text-gray-400 italic text-center py-4">Belum ada data penjualan.</p>';
-          }
+      <!-- Viewer -->
+      <div class="lg:col-span-3 bg-white rounded-2xl overflow-hidden shadow-xl">
+        <div class="bg-slate-100 px-6 py-4 border-b">
+          <h3 id="docTitle" class="font-bold text-slate-800">Pilih Dokumen</h3>
+        </div>
+        <iframe
+          id="docViewer"
+          src=""
+          class="w-full h-[600px]"
+        ></iframe>
+      </div>
 
-          renderStockRecommendation();
-        } catch (error) {
-          console.error("Gagal update analytics:", error);
-        }
-      }
+    </div>
+  </div>
+</section>
 
-      function renderStockRecommendation() {
-        const lowStockItems = products.filter((p) => p.stock < 10);
-        const recommendationBox = document.querySelector(
-          "#analytics-section .p-4"
-        );
+<!-- ================= FOOTER ================= -->
+<footer class="py-10 text-center text-slate-500 text-sm">
+  © 2026 — Built with clarity, logic, and clean documentation.
+</footer>
 
-        if (!recommendationBox) return;
+<script>
+  const docs = {
+    srs: {
+      title: "SRS & User Stories",
+      file: "assets/docs/srs.pdf"
+    },
+    uml: {
+      title: "UML & ERD Diagram",
+      file: "assets/docs/uml.pdf"
+    },
+    testing: {
+      title: "QA & Testing Report",
+      file: "assets/docs/testing.pdf"
+    }
+  };
 
-        if (lowStockItems.length > 0) {
-          recommendationBox.className =
-            "p-4 bg-orange-50 rounded-2xl border border-orange-100";
-          recommendationBox.innerHTML = `
-            <p class="text-sm text-orange-800 font-bold">⚠️ Perhatian Stok!</p>
-            <p class="text-xs text-orange-600 mt-1">Ada ${lowStockItems.length} item stok kritis! Segera restock.</p>`;
-        } else {
-          recommendationBox.className =
-            "p-4 bg-blue-50 rounded-2xl border border-blue-100";
-          recommendationBox.innerHTML = `
-            <p class="text-sm text-blue-800 font-medium">✅ Semua Aman</p>
-            <p class="text-xs text-blue-600 mt-1">Stok aman terkendali.</p>`;
-        }
-      }
-      function toggleModal(id) {
-        document.getElementById(id).classList.toggle("hidden");
-      }
+  function openDoc(type) {
+    document.getElementById("docTitle").innerText = docs[type].title;
+    document.getElementById("docViewer").src = docs[type].file;
+  }
+</script>
 
-      async function loadInitialData() {
-        await fetchProducts(); 
-        await renderAnalytics(); 
-      }
-
-      loadInitialData();
-    </script>
-  </body>
+</body>
 </html>
